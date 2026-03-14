@@ -13,7 +13,7 @@ export default function DraftsList({ drafts }: DraftsListProps) {
   return (
     <div className="space-y-4">
       {drafts.map((draft, index) => (
-        <DraftCard key={index} draft={draft} index={index} />
+        <DraftCard key={`${index}-${draft.subject.slice(0, 20)}`} draft={draft} index={index} />
       ))}
     </div>
   );
