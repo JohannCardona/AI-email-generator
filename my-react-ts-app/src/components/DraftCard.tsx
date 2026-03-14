@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Check, Copy } from 'lucide-react';
 import type { EmailDraft } from '../types/email';
 import { copyToClipboard } from '../utils/clipboard';
 
@@ -7,6 +9,18 @@ interface DraftCardProps {
 }
 
 export default function DraftCard({ draft, index }: DraftCardProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await copyToClipboard(draft);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard errors are non-critical; failure is silent to the user
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-4">
@@ -14,10 +28,21 @@ export default function DraftCard({ draft, index }: DraftCardProps) {
           Draft {index + 1}
         </h3>
         <button
-          onClick={() => copyToClipboard(draft)}
-          className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors text-sm font-medium"
+          onClick={handleCopy}
+          aria-label={copied ? 'Copied to clipboard' : `Copy draft ${index + 1} to clipboard`}
+          className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors text-sm font-medium flex items-center gap-2"
         >
-          Copy
+          {copied ? (
+            <>
+              <Check className="w-4 h-4" />
+              Copied!
+            </>
+          ) : (
+            <>
+              <Copy className="w-4 h-4" />
+              Copy
+            </>
+          )}
         </button>
       </div>
 
