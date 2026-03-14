@@ -21,6 +21,11 @@ export default function EmailForm({
   onToneChange,
   onSubmit
 }: EmailFormProps) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit();
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
       <div className="flex items-center gap-3 mb-6">
@@ -28,12 +33,13 @@ export default function EmailForm({
         <h1 className="text-3xl font-bold text-gray-800">Email Draft Generator</h1>
       </div>
 
-      <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="email-description" className="block text-sm font-medium text-gray-700 mb-2">
             What's your email about?
           </label>
           <textarea
+            id="email-description"
             value={description}
             onChange={(e) => onDescriptionChange(e.target.value)}
             placeholder="Example: Need to decline a meeting invitation politely because of a scheduling conflict..."
@@ -46,11 +52,14 @@ export default function EmailForm({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Tone
           </label>
-          <div className="flex gap-3">
+          <div className="flex gap-3" role="group" aria-label="Select tone">
             {TONES.map((t) => (
               <button
                 key={t}
+                type="button"
                 onClick={() => onToneChange(t)}
+                aria-label={`${t.charAt(0).toUpperCase() + t.slice(1)} tone`}
+                aria-pressed={tone === t}
                 className={`px-6 py-2 rounded-lg font-medium transition-all ${
                   tone === t
                     ? 'bg-indigo-600 text-white shadow-md'
@@ -64,13 +73,13 @@ export default function EmailForm({
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
 
         <button
-          onClick={onSubmit}
+          type="submit"
           disabled={loading}
           className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
@@ -86,7 +95,7 @@ export default function EmailForm({
             </>
           )}
         </button>
-      </div>
+      </form>
     </div>
   );
 }
