@@ -1,4 +1,5 @@
 import type { EmailDraft, ToneType } from '../types/email';
+import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
 
 interface GenerateDraftsParams {
   description: string;
@@ -8,13 +9,6 @@ interface GenerateDraftsParams {
 interface BackendResponse {
   drafts: EmailDraft[];
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.DEV ? 'http://localhost:3001' : '');
-
-const API_ENDPOINTS = {
-  EMAIL_GENERATE: '/api/email/generate',
-} as const;
 
 export const generateEmailDrafts = async ({ description, tone }: GenerateDraftsParams): Promise<EmailDraft[]> => {
   let response: Response;
